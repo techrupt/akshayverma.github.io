@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#030712">
-<title>Akshay Verma — Lead Java Full Stack Engineer</title>
-<meta name="description" content="Akshay Verma is a Senior Java Full Stack Engineer with 11+ years of experience in Spring Boot, Apache Kafka, and Angular.">
+<title>Akshay Verma — Lead Java Full Stack Developer</title>
+<meta name="description" content="Akshay Verma is a Lead Java Full Stack Developer with 11+ years of experience building modern Angular frontends, Spring Boot microservices, and end-to-end enterprise architectures.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -14,14 +14,15 @@
 :root {
   --bg: #030712;
   --surface: #0b1329;
-  --surface-card: rgba(15, 23, 42, 0.7);
+  --surface-card: rgba(15, 23, 42, 0.75);
   --ink: #f8fafc;
   --muted: #94a3b8;
   --sea: #38bdf8;
   --teal: #2dd4bf;
   --band: #f43f5e;
+  --amber: #fbbf24;
   --border: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(56, 189, 248, 0.4);
+  --border-glow: rgba(56, 189, 248, 0.45);
   --font-display: "Space Grotesk", sans-serif;
   --font-body: "Plus Jakarta Sans", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
@@ -44,11 +45,15 @@ body {
 a { color: inherit; text-decoration: none; }
 .wrap { width: min(1200px, 100% - 3rem); margin-inline: auto; }
 
-/* Quick Floating Background Particles */
+/* Interactive Canvas for Confetti & Particles */
+#fxCanvas {
+  position: fixed; inset: 0; pointer-events: none; z-index: 999;
+  width: 100%; height: 100%;
+}
+
 .ambient-glow {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.06), transparent 80%);
-  transition: opacity 0.3s;
+  background: radial-gradient(650px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.08), transparent 75%);
 }
 
 /* Header */
@@ -59,16 +64,17 @@ a { color: inherit; text-decoration: none; }
   padding: 0.9rem 0;
 }
 .nav-wrap { display: flex; justify-content: space-between; align-items: center; }
-.logo { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; display: flex; align-items: center; gap: 0.6rem; }
+.logo { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; display: flex; align-items: center; gap: 0.6rem; cursor: pointer; }
 .logo-tag { font-family: var(--font-mono); font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; background: rgba(56, 189, 248, 0.12); color: var(--sea); border: 1px solid rgba(56,189,248,0.3); }
 
-/* Live Status Badge */
 .status-badge {
   display: inline-flex; align-items: center; gap: 0.5rem;
   padding: 0.35rem 0.85rem; border-radius: 999px;
   background: rgba(45, 212, 191, 0.08); border: 1px solid rgba(45, 212, 191, 0.25);
   font-size: 0.8rem; font-family: var(--font-mono); color: #5eead4;
+  cursor: pointer; transition: transform 0.2s;
 }
+.status-badge:hover { transform: scale(1.05); }
 .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #2dd4bf; box-shadow: 0 0 10px #2dd4bf; animation: pulse 1.8s infinite ease-in-out; }
 @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.8); } }
 
@@ -78,8 +84,8 @@ a { color: inherit; text-decoration: none; }
 
 /* Hero Section */
 .hero {
-  position: relative; min-height: 100vh; display: flex; align-items: center;
-  padding: 7.5rem 0 4rem; z-index: 1;
+  position: relative; min-height: 94vh; display: flex; align-items: center;
+  padding: 7.5rem 0 3.5rem; z-index: 1;
 }
 .hero-grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 3.5rem; align-items: center; }
 
@@ -90,7 +96,7 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: -0.04em; margin-bottom: 1.35rem;
 }
 .hero-title span { color: transparent; -webkit-text-stroke: 1.2px rgba(255,255,255,0.45); }
-.hero-subtitle { font-size: clamp(1.05rem, 1.8vw, 1.25rem); color: var(--muted); max-width: 42ch; margin-bottom: 2rem; }
+.hero-subtitle { font-size: clamp(1.05rem, 1.8vw, 1.25rem); color: var(--muted); max-width: 44ch; margin-bottom: 2rem; }
 .hero-subtitle b { color: var(--ink); font-weight: 600; }
 
 .cta-group { display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: center; margin-bottom: 2.5rem; }
@@ -98,82 +104,146 @@ a { color: inherit; text-decoration: none; }
   display: inline-flex; align-items: center; gap: 0.5rem;
   padding: 0.8rem 1.6rem; border-radius: 12px; font-weight: 600; font-size: 0.92rem;
   border: 1px solid var(--border); background: var(--surface); color: var(--ink);
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
 }
 .btn.primary { background: var(--sea); color: #020617; border-color: var(--sea); box-shadow: 0 4px 20px -2px rgba(56, 189, 248, 0.4); }
-.btn.primary:hover { background: #7dd3fc; transform: translateY(-2px); }
-.btn.secondary:hover { border-color: var(--sea); background: rgba(56, 189, 248, 0.08); transform: translateY(-2px); }
+.btn.primary:hover { background: #7dd3fc; transform: translateY(-3px) scale(1.02); }
+.btn.secondary:hover { border-color: var(--sea); background: rgba(56, 189, 248, 0.08); transform: translateY(-3px); }
+.btn:active { transform: scale(0.96); }
 
-/* Metrics counter bar */
 .metrics { display: flex; gap: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem; }
+.metric-item { cursor: pointer; transition: transform 0.2s; }
+.metric-item:hover { transform: translateY(-3px); }
 .metric-item h3 { font-family: var(--font-display); font-size: 1.8rem; color: #fff; line-height: 1; }
 .metric-item p { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
 
-/* Interactive Tech Avatar Framing */
-.avatar-wrap {
-  position: relative; width: min(100%, 360px); justify-self: center;
-  perspective: 1000px;
+/* Interactive Picture Hover & Floating Tech Badges */
+.portrait-container {
+  position: relative; width: min(100%, 370px); justify-self: center;
+  perspective: 1200px;
 }
-.avatar-card {
-  position: relative; border-radius: 28px; overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: var(--surface);
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.8);
-  transform-style: preserve-3d;
-  transition: transform 0.15s ease-out;
-}
-.avatar-card img {
-  width: 100%; height: 480px; object-fit: cover; object-position: center 25%;
-  display: block; filter: contrast(1.05);
-}
-.avatar-orbit {
+.portrait-orbit {
   position: absolute; inset: -18px; border-radius: 36px;
-  border: 1.5px dashed rgba(56, 189, 248, 0.35); pointer-events: none;
-  animation: rotateOrbit 30s linear infinite;
+  border: 1.5px dashed rgba(56, 189, 248, 0.3); pointer-events: none;
+  animation: rotateOrbit 40s linear infinite;
 }
 @keyframes rotateOrbit { to { transform: rotate(360deg); } }
 
 /* Floating Tech Pills on Avatar */
-.tech-pill {
-  position: absolute; background: rgba(11, 19, 41, 0.85); backdrop-filter: blur(8px);
-  border: 1px solid var(--border-glow); padding: 0.4rem 0.85rem; border-radius: 999px;
+.tech-badge-orbit {
+  position: absolute; z-index: 5;
+  background: rgba(11, 19, 41, 0.9); backdrop-filter: blur(10px);
+  border: 1px solid var(--border-glow); padding: 0.45rem 0.85rem; border-radius: 999px;
+  display: flex; align-items: center; gap: 0.45rem;
   font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; color: #fff;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.4); animation: floatPill 4s ease-in-out infinite;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+  animation: floatOrb 5s ease-in-out infinite;
+  transition: transform 0.2s; cursor: pointer;
 }
-.tech-pill.p1 { top: 20px; left: -15px; animation-delay: 0s; }
-.tech-pill.p2 { bottom: 90px; right: -20px; animation-delay: 1.5s; color: var(--sea); }
-.tech-pill.p3 { bottom: 25px; left: -10px; animation-delay: 0.8s; color: var(--teal); }
-@keyframes floatPill { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.tech-badge-orbit:hover { transform: scale(1.15) !important; border-color: var(--sea); }
+.tech-badge-orbit.b1 { top: 15px; left: -25px; animation-delay: 0s; }
+.tech-badge-orbit.b2 { top: 45%; right: -30px; animation-delay: 1.6s; color: var(--sea); }
+.tech-badge-orbit.b3 { bottom: 35px; left: -15px; animation-delay: 0.8s; color: var(--teal); }
+@keyframes floatOrb { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-.avatar-badge {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  padding: 1.25rem; background: linear-gradient(0deg, rgba(3,7,18,0.96) 20%, transparent 100%);
-  border-top: 1px solid rgba(255,255,255,0.08);
+.portrait-card {
+  position: relative; border-radius: 26px; overflow: hidden;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  background: var(--surface);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+  transform-style: preserve-3d;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+  cursor: pointer;
 }
-.avatar-badge p { font-family: var(--font-mono); font-size: 0.72rem; color: var(--sea); }
-.avatar-badge h4 { font-size: 1.05rem; font-weight: 600; color: #fff; }
-
-/* Interactive Kafka Live Stream Simulator */
-.kafka-simulator {
-  background: var(--surface-card); border: 1px solid var(--border);
-  border-radius: 20px; padding: 1.5rem; margin-top: 4rem; backdrop-filter: blur(12px);
+.portrait-card:hover {
+  border-color: var(--sea);
+  box-shadow: 0 30px 60px -10px rgba(56, 189, 248, 0.4);
 }
-.stream-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; margin-bottom: 1rem; }
-.stream-bar span { font-family: var(--font-mono); font-size: 0.8rem; color: var(--sea); display: flex; align-items: center; gap: 0.5rem; }
-.events-flex { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-.event-btn {
-  background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border);
-  padding: 0.45rem 0.9rem; border-radius: 8px; font-family: var(--font-mono); font-size: 0.8rem;
-  color: var(--muted); cursor: pointer; transition: all 0.2s;
+.portrait-card img {
+  width: 100%; height: 490px; object-fit: cover; object-position: center 25%;
+  display: block; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+  filter: contrast(1.05) brightness(0.97);
 }
-.event-btn:hover, .event-btn.active { background: rgba(56, 189, 248, 0.15); border-color: var(--sea); color: #fff; }
-.stream-log {
-  margin-top: 1rem; background: #020617; border-radius: 8px; padding: 1rem;
-  font-family: var(--font-mono); font-size: 0.8rem; color: #a5f3fc; border: 1px solid rgba(255,255,255,0.05);
-  min-height: 48px; display: flex; align-items: center;
+.portrait-card:hover img {
+  transform: scale(1.06);
+  filter: contrast(1.1) brightness(1.02);
 }
 
-/* Sections Common Header */
+.portrait-glare {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 60%);
+  opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+}
+.portrait-card:hover .portrait-glare { opacity: 1; }
+
+.portrait-hud {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(3,7,18,0.95) 15%, rgba(3,7,18,0.4) 60%, transparent 100%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 1.4rem; opacity: 0.95; transition: all 0.3s ease;
+}
+.portrait-card:hover .portrait-hud {
+  background: linear-gradient(to top, rgba(3,7,18,0.98) 35%, rgba(3,7,18,0.6) 80%, transparent 100%);
+}
+.hud-tag { font-family: var(--font-mono); font-size: 0.72rem; color: var(--sea); margin-bottom: 2px; }
+.hud-name { font-size: 1.15rem; font-weight: 700; color: #fff; }
+.hud-skills {
+  display: flex; gap: 0.45rem; flex-wrap: wrap; margin-top: 0.6rem;
+  max-height: 0; overflow: hidden; opacity: 0; transition: all 0.35s ease;
+}
+.portrait-card:hover .hud-skills { max-height: 80px; opacity: 1; margin-top: 0.8rem; }
+.hud-pill {
+  font-family: var(--font-mono); font-size: 0.7rem; padding: 2px 8px;
+  border-radius: 6px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56,189,248,0.3);
+  color: #fff; display: flex; align-items: center; gap: 4px;
+}
+
+/* Eye-Tracking Companion Avatar */
+.avatar-guide {
+  position: fixed; right: 2rem; bottom: 2rem; z-index: 85;
+  display: flex; align-items: flex-end; gap: 0.85rem;
+  pointer-events: none;
+}
+.avatar-bubble {
+  background: rgba(11, 19, 41, 0.95); backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glow); border-radius: 18px 18px 4px 18px;
+  padding: 0.9rem 1.2rem; max-width: 280px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+  font-size: 0.82rem; color: #e2e8f0; pointer-events: auto;
+  transform-origin: bottom right; animation: floatBubble 5s ease-in-out infinite;
+}
+@keyframes floatBubble { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.bubble-title { font-family: var(--font-mono); font-size: 0.7rem; color: var(--sea); margin-bottom: 0.2rem; font-weight: 600; }
+.bubble-links { display: flex; gap: 0.6rem; margin-top: 0.6rem; }
+.bubble-link {
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--teal);
+  text-decoration: underline; cursor: pointer;
+}
+
+.avatar-bot {
+  width: 58px; height: 58px; border-radius: 50%;
+  background: linear-gradient(135deg, #0284c7, #2dd4bf);
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.6);
+  border: 2px solid #fff; pointer-events: auto; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.avatar-bot:hover { transform: scale(1.15); }
+.bot-face {
+  width: 32px; height: 20px; background: #030712; border-radius: 10px;
+  display: flex; align-items: center; justify-content: space-around; padding: 0 4px;
+}
+.bot-eye {
+  width: 8px; height: 8px; background: #38bdf8; border-radius: 50%;
+  position: relative; transition: transform 0.1s ease-out;
+}
+.bot-eye::after {
+  content: ""; position: absolute; width: 3px; height: 3px; background: #fff;
+  border-radius: 50%; top: 1px; left: 1px;
+}
+
+/* Sections */
 .section-meta { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 2.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; }
 .section-num { font-family: var(--font-mono); font-size: 0.85rem; color: var(--sea); }
 .section-h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 700; }
@@ -183,21 +253,27 @@ a { color: inherit; text-decoration: none; }
 .bento-card {
   background: var(--surface-card); border: 1px solid var(--border);
   border-radius: 18px; padding: 1.8rem; backdrop-filter: blur(8px);
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s ease;
 }
-.bento-card:hover { border-color: var(--border-glow); transform: translateY(-3px); }
-.bento-card.col-8 { grid-column: span 8; }
-.bento-card.col-4 { grid-column: span 4; }
+.bento-card:hover { border-color: var(--border-glow); transform: translateY(-4px); }
 .bento-card.col-6 { grid-column: span 6; }
-.bento-card.col-12 { grid-column: span 12; }
-.bento-card h3 { font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 0.6rem; display: flex; justify-content: space-between; }
+.bento-card h3 { font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 0.6rem; display: flex; align-items: center; justify-content: space-between; }
 .bento-card p { color: var(--muted); font-size: 0.92rem; }
 
-.tech-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+/* Interactive Bouncing Tags with SVGs */
+.tech-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.2rem; }
 .tech-tag {
-  font-family: var(--font-mono); font-size: 0.78rem; padding: 0.3rem 0.7rem;
-  border-radius: 6px; background: rgba(255, 255, 255, 0.04);
+  font-family: var(--font-mono); font-size: 0.8rem; padding: 0.4rem 0.75rem;
+  border-radius: 8px; background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border); color: var(--ink);
+  cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-flex; align-items: center; gap: 0.45rem;
+}
+.tech-tag svg, .tech-badge-orbit svg { width: 16px; height: 16px; flex-shrink: 0; }
+.tech-tag:hover {
+  background: rgba(56, 189, 248, 0.15); border-color: var(--sea);
+  color: #fff; transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.25);
 }
 
 /* Timeline */
@@ -205,9 +281,9 @@ a { color: inherit; text-decoration: none; }
 .timeline-card {
   background: var(--surface-card); border: 1px solid var(--border);
   border-radius: 18px; padding: 1.8rem; backdrop-filter: blur(8px);
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, transform 0.2s;
 }
-.timeline-card:hover { border-color: var(--border-glow); }
+.timeline-card:hover { border-color: var(--border-glow); transform: translateX(4px); }
 .timeline-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; margin-bottom: 0.4rem; }
 .timeline-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: #fff; }
 .timeline-period { font-family: var(--font-mono); font-size: 0.8rem; color: var(--sea); }
@@ -229,39 +305,63 @@ a { color: inherit; text-decoration: none; }
 .cta-email {
   font-family: var(--font-display); font-size: clamp(1.4rem, 4vw, 2.6rem);
   font-weight: 700; color: var(--sea); display: inline-block; margin: 1.2rem 0;
+  transition: transform 0.2s;
 }
+.cta-email:hover { transform: scale(1.03); }
 .footer-bottom { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 0.85rem; font-family: var(--font-mono); }
 
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; }
-  .avatar-wrap { justify-self: start; margin-top: 2rem; width: 100%; max-width: 320px; }
-  .bento-card.col-8, .bento-card.col-4, .bento-card.col-6 { grid-column: span 12; }
+  .portrait-container { justify-self: start; margin-top: 2rem; width: 100%; max-width: 320px; }
+  .bento-card.col-6 { grid-column: span 12; }
   .nav-links a:not(:last-child) { display: none; }
+  .avatar-guide { bottom: 1rem; right: 1rem; }
+  .avatar-bubble { display: none; }
 }
 </style>
 </head>
 <body>
 
+<canvas id="fxCanvas"></canvas>
 <div class="ambient-glow" id="ambientGlow"></div>
 
-<!-- Navigation Header -->
+<!-- Interactive Avatar Bot Guide -->
+<div class="avatar-guide" id="avatarGuide">
+  <div class="avatar-bubble" id="avatarBubble">
+    <div class="bubble-title">// COMPANION BOT</div>
+    <div id="bubbleText">Hi! Looking for a Lead Full Stack Developer with 11+ years in Java & Angular?[cite: 1]</div>
+    <div class="bubble-links">
+      <span class="bubble-link" onclick="quickNav('#about')">Capabilities</span>
+      <span class="bubble-link" onclick="quickNav('#experience')">Experience</span>
+      <span class="bubble-link" onclick="shootConfetti()">Celebrate 🎉</span>
+    </div>
+  </div>
+  <div class="avatar-bot" id="avatarBot" onclick="cycleAvatarTip()" title="Click to interact!">
+    <div class="bot-face">
+      <div class="bot-eye" id="eyeL"></div>
+      <div class="bot-eye" id="eyeR"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
 <header class="nav-header">
   <div class="wrap nav-wrap">
     <div style="display:flex; align-items:center; gap:1.25rem;">
-      <a class="logo" href="#top">
+      <a class="logo" href="#top" onclick="shootConfetti()">
         Akshay Verma
         <span class="logo-tag">LEAD FULL-STACK</span>
       </a>
-      <div class="status-badge">
+      <div class="status-badge" onclick="shootConfetti()">
         <span class="pulse-dot"></span>
         AVAILABLE FOR SENIOR ROLES
       </div>
     </div>
     <nav class="nav-links">
-      <a href="#about">01 // Architecture</a>
+      <a href="#about">01 // Full-Stack Core</a>
       <a href="#skills">02 // Matrix</a>
       <a href="#experience">03 // Track Record</a>
-      <a href="mailto:akshay.kverma14@gmail.com" class="btn primary" style="padding:0.45rem 1rem; border-radius:8px; font-size:0.85rem;">Let's Connect</a>
+      <a href="mailto:akshay.kverma14@gmail.com" class="btn primary" style="padding:0.45rem 1rem; border-radius:8px; font-size:0.85rem;" onclick="shootConfetti()">Let's Connect</a>
     </nav>
   </div>
 </header>
@@ -271,119 +371,200 @@ a { color: inherit; text-decoration: none; }
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <div class="section-tag"><span>●</span> 11+ YEARS ENTERPRISE DELIVERY</div>
-        <h1 class="hero-title">Architecting <span>Event-Driven</span> Resilient Systems.</h1>
-        <p class="hero-subtitle">Senior Full Stack Engineer specializing in <b>Spring Boot</b> microservices, <b>Apache Kafka</b> event backbones, and <b>Angular</b> enterprise applications.</p>
+        <div class="section-tag"><span>●</span> 11+ YEARS ENTERPRISE DELIVERY[cite: 1]</div>
+        <h1 class="hero-title">Engineering Scalable <span>Full-Stack</span> Web Systems.</h1>
+        <p class="hero-subtitle">Senior Java Full Stack Specialist delivering complete digital solutions — architecting modular <b>Angular (v6–17)</b> frontends, resilient <b>Spring Boot microservices</b>, and automated DevOps workflows[cite: 1].</p>
         
         <div class="cta-group">
           <a class="btn primary" href="#experience">Explore Track Record</a>
-          <a class="btn secondary" href="./assets/Akshay-Verma-Resume.pdf" download>Download CV</a>
-          <a class="btn secondary" href="https://github.com/techrupt" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn secondary" href="./assets/Akshay-Verma-Resume.pdf" download onclick="shootConfetti()">Download CV 📄</a>
+          <a class="btn secondary" href="https://github.com/techrupt" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
 
         <div class="metrics">
-          <div class="metric-item">
+          <div class="metric-item" onclick="shootConfetti()">
             <h3>11+</h3>
-            <p>YEARS IN PRODUCTION</p>
+            <p>YEARS FULL-STACK[cite: 1]</p>
           </div>
-          <div class="metric-item">
-            <h3>15+</h3>
-            <p>MICROSERVICES SHIPPED</p>
+          <div class="metric-item" onclick="shootConfetti()">
+            <h3>Angular + Java</h3>
+            <p>CORE STACK[cite: 1]</p>
           </div>
-          <div class="metric-item">
-            <h3>99.9%</h3>
-            <p>PIPELINE UPTIME</p>
+          <div class="metric-item" onclick="shootConfetti()">
+            <h3>100%</h3>
+            <p>END-TO-END DELIVERY</p>
           </div>
         </div>
       </div>
 
-      <!-- Interactive Tech Avatar -->
-      <div class="avatar-wrap" id="avatarWrap">
-        <div class="avatar-orbit"></div>
-        <div class="tech-pill p1">⚡ Kafka Producer</div>
-        <div class="tech-pill p2">☕ Spring Boot 3</div>
-        <div class="tech-pill p3">🅰️ Angular 17</div>
+      <!-- Real Photo with 3D Depth, Floating Tech Orbit Badges -->
+      <div class="portrait-container" id="portraitContainer">
+        <div class="portrait-orbit"></div>
 
-        <div class="avatar-card" id="avatarCard">
-          <img src="./assets/akshay.jpeg" alt="Akshay Verma - Lead Full Stack Engineer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80';">
-          <div class="avatar-badge">
-            <p>LOCATION & BASE</p>
-            <h4>Kolkata, India · Open to Global Remote</h4>
+        <!-- Floating Badges with Official Brand Icons -->
+        <div class="tech-badge-orbit b1" onclick="shootConfetti()">
+          <!-- Java Coffee Cup SVG -->
+          <svg viewBox="0 0 24 24" fill="#ea580c"><path d="M2 19h18v2H2zM20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 5v2h-2V5h2v3zM6 13V5h8v8c0 1.1-.9 2-2 2H8c-1.1 0-2-.9-2-2z"/></svg>
+          Java Core
+        </div>
+
+        <div class="tech-badge-orbit b2" onclick="shootConfetti()">
+          <!-- Angular SVG -->
+          <svg viewBox="0 0 24 24" fill="#dd0031"><path d="M12 2L2 5.5l1.5 12.5L12 22l8.5-4L22 5.5 12 2zm0 2.8l5.8 12.9h-2.1l-1.2-3H9.5l-1.2 3H6.2L12 4.8zm-1.6 8.3h3.2L12 9.5l-1.6 3.6z"/></svg>
+          Angular 17
+        </div>
+
+        <div class="tech-badge-orbit b3" onclick="shootConfetti()">
+          <!-- Docker Whale SVG -->
+          <svg viewBox="0 0 24 24" fill="#38bdf8"><path d="M13.96 5.67h2.09v1.94h-2.09V5.67zm-2.88 0h2.09v1.94h-2.09V5.67zm-2.89 0h2.09v1.94H8.19V5.67zm8.65 2.64h2.09v1.94h-2.09V8.31zm-2.88 0h2.09v1.94h-2.09V8.31zm-2.88 0h2.09v1.94h-2.09V8.31zm-2.89 0h2.09v1.94H8.19V8.31zm-2.88 0h2.08v1.94H5.31V8.31zm17.65 3.01c-.34-.23-1.09-.34-1.75-.12-.17-.7-.61-1.3-1.28-1.71l-.57-.35-.37.55c-.47.7-.62 1.54-.42 2.36-.93.55-2.09.84-3.35.84H2.43c-.24 0-.46.12-.59.31-.13.2-.15.44-.06.66 1.15 2.91 3.51 5.08 6.47 5.96 1.15.34 2.37.52 3.6.52 4.97 0 9.29-2.91 10.74-7.25.07-.22.37-.32.61-.25.59.18 1.18.06 1.55-.3.26-.26.4-.64.38-1.02-.02-.38-.2-.71-.47-.85z"/></svg>
+          Docker
+        </div>
+
+        <div class="portrait-card" id="portraitCard" onclick="shootConfetti()">
+          <img src="./assets/akshay.jpeg" alt="Akshay Verma - Lead Full Stack Developer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80';">
+          <div class="portrait-glare"></div>
+          <div class="portrait-hud">
+            <span class="hud-tag">LEAD FULL STACK DEVELOPER</span>
+            <div class="hud-name">Akshay Verma</div>
+            <div class="hud-skills">
+              <span class="hud-pill">
+                <svg viewBox="0 0 24 24" fill="#dd0031" width="12" height="12"><path d="M12 2L2 5.5l1.5 12.5L12 22l8.5-4L22 5.5 12 2zm0 2.8l5.8 12.9h-2.1l-1.2-3H9.5l-1.2 3H6.2L12 4.8zm-1.6 8.3h3.2L12 9.5l-1.6 3.6z"/></svg>
+                Angular 17
+              </span>
+              <span class="hud-pill">
+                <svg viewBox="0 0 24 24" fill="#6db33f" width="12" height="12"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                Spring Boot
+              </span>
+              <span class="hud-pill">
+                <svg viewBox="0 0 24 24" fill="#38bdf8" width="12" height="12"><path d="M2 19h18v2H2zM20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 5v2h-2V5h2v3zM6 13V5h8v8c0 1.1-.9 2-2 2H8c-1.1 0-2-.9-2-2z"/></svg>
+                Java
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Interactive Live Kafka Event Simulator -->
-  <section class="wrap">
-    <div class="kafka-simulator">
-      <div class="stream-bar">
-        <span><b class="pulse-dot"></b> LIVE KAFKA EVENT STREAM SIMULATOR</span>
-        <span style="color:var(--muted); font-size:0.75rem;">Click any topic event to test consumer payload</span>
-      </div>
-      <div class="events-flex">
-        <button class="event-btn active" onclick="triggerEvent(this, 'order.created', 'Order #98231 payload generated. Partition 2. Offset: 11048')">order.created</button>
-        <button class="event-btn" onclick="triggerEvent(this, 'payment.settled', 'Payment TXN_8819 settled. Consumer ack received. Latency: 4ms')">payment.settled</button>
-        <button class="event-btn" onclick="triggerEvent(this, 'user.authenticated', 'JWT token issued. Spring Security context updated.')">user.authenticated</button>
-        <button class="event-btn" onclick="triggerEvent(this, 'inventory.reserved', 'Inventory lock acquired for SKU-774. Async broadcast emitted.')">inventory.reserved</button>
-      </div>
-      <div class="stream-log" id="streamLog">
-        &gt; [Topic: order.created] payload: {"orderId": "ORD-98231", "amount": 1490.00, "status": "CONFIRMED"} — 0.002s
-      </div>
-    </div>
-  </section>
-
-  <!-- Section 01: Core Architecture -->
+  <!-- Section 01: Core Full-Stack Capabilities with Official Icons -->
   <section id="about" style="padding: 5rem 0 2rem;">
     <div class="wrap">
       <div class="section-meta">
         <span class="section-num">01 / ARCHITECTURE</span>
-        <h2 class="section-h2">Production-Grade Capabilities</h2>
+        <h2 class="section-h2">Full Stack Engineering Capabilities</h2>
       </div>
 
       <div class="bento-grid">
-        <div class="bento-card col-8">
-          <h3>Event Streaming & High Throughput <span>⚡</span></h3>
-          <p>Over a decade designing low-latency, loosely coupled distributed architectures. Constructing fault-tolerant Kafka consumer groups, dead-letter queues, and handling high volume transaction backbones.</p>
+        <!-- Frontend Tier -->
+        <div class="bento-card col-6">
+          <h3>
+            <span>Frontend Architecture</span>
+            <!-- Angular & TS Icons -->
+            <div style="display:flex; gap:6px;">
+              <svg viewBox="0 0 24 24" fill="#dd0031" width="22" height="22"><path d="M12 2L2 5.5l1.5 12.5L12 22l8.5-4L22 5.5 12 2zm0 2.8l5.8 12.9h-2.1l-1.2-3H9.5l-1.2 3H6.2L12 4.8zm-1.6 8.3h3.2L12 9.5l-1.6 3.6z"/></svg>
+              <svg viewBox="0 0 24 24" fill="#3178c6" width="22" height="22"><path d="M2 3h20v18H2V3zm16.5 13.5v-1.8c-.5.4-1.1.6-1.8.6-1.3 0-2.1-.7-2.1-1.9 0-1.4.9-1.9 2.3-2.3.9-.2 1.3-.4 1.3-.8 0-.4-.4-.7-1-.7-.6 0-1.1.2-1.6.6l-.8-1.5c.7-.6 1.6-.9 2.6-.9 1.9 0 3 1 3 2.5v4c-.6.3-1.3.4-1.9.4zm-7.7 0H8.5V9.8H6.2V8.2h7.1v1.6h-2.5v6.7z"/></svg>
+            </div>
+          </h3>
+          <p>Over a decade creating rich client interfaces using Angular (from version 6 through 17)[cite: 1]. Proficient with reactive forms, reusable component libraries, TypeScript, state management, and seamless REST client consumption[cite: 1].</p>
           <div class="tech-tags">
-            <span class="tech-tag">Apache Kafka</span>
-            <span class="tech-tag">Spring Boot</span>
-            <span class="tech-tag">Microservices</span>
-            <span class="tech-tag">ActiveMQ / RabbitMQ</span>
+            <span class="tech-tag" onclick="burstTag(this)">
+              <svg viewBox="0 0 24 24" fill="#dd0031"><path d="M12 2L2 5.5l1.5 12.5L12 22l8.5-4L22 5.5 12 2zm0 2.8l5.8 12.9h-2.1l-1.2-3H9.5l-1.2 3H6.2L12 4.8zm-1.6 8.3h3.2L12 9.5l-1.6 3.6z"/></svg>
+              Angular 6 - 17
+            </span>
+            <span class="tech-tag" onclick="burstTag(this)">
+              <svg viewBox="0 0 24 24" fill="#3178c6"><path d="M2 3h20v18H2V3zm16.5 13.5v-1.8c-.5.4-1.1.6-1.8.6-1.3 0-2.1-.7-2.1-1.9 0-1.4.9-1.9 2.3-2.3.9-.2 1.3-.4 1.3-.8 0-.4-.4-.7-1-.7-.6 0-1.1.2-1.6.6l-.8-1.5c.7-.6 1.6-.9 2.6-.9 1.9 0 3 1 3 2.5v4c-.6.3-1.3.4-1.9.4zm-7.7 0H8.5V9.8H6.2V8.2h7.1v1.6h-2.5v6.7z"/></svg>
+              TypeScript
+            </span>
+            <span class="tech-tag" onclick="burstTag(this)">
+              <svg viewBox="0 0 24 24" fill="#d1279a"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.5h-2v-5h2zm0-7h-2V7h2z"/></svg>
+              RxJS Streams
+            </span>
+            <span class="tech-tag" onclick="burstTag(this)">HTML5 & SCSS</span>
           </div>
         </div>
 
-        <div class="bento-card col-4">
-          <h3>AI Engineering Loop <span>🤖</span></h3>
-          <p>Accelerating development with agentic programming tools for rapid test suites, documentation, and automated code review.</p>
+        <!-- Backend Tier -->
+        <div class="bento-card col-6">
+          <h3>
+            <span>Backend & Microservices</span>
+            <div style="display:flex; gap:6px;">
+              <!-- Java Coffee Icon -->
+              <svg viewBox="0 0 24 24" fill="#ea580c" width="22" height="22"><path d="M2 19h18v2H2zM20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 5v2h-2V5h2v3zM6 13V5h8v8c0 1.1-.9 2-2 2H8c-1.1 0-2-.9-2-2z"/></svg>
+              <!-- Spring Boot Leaf Icon -->
+              <svg viewBox="0 0 24 24" fill="#6db33f" width="22" height="22"><path d="M21.8 11.5c-.2-4.8-4-8.8-8.8-9.4C6.8 1.4 1.8 6.1 1.6 12.3c-.2 5.5 3.9 10.1 9.4 10.3 6.2.2 11-4.9 10.8-11.1zm-9.3 7.8c-4.2 0-7.6-3.4-7.6-7.6s3.4-7.6 7.6-7.6 7.6 3.4 7.6 7.6-3.4 7.6-7.6 7.6z"/></svg>
+            </div>
+          </h3>
+          <p>Expert in developing robust, maintainable backend services with Spring Boot and Spring MVC[cite: 1]. Architecting RESTful APIs, securing endpoints, and designing modular microservice ecosystems for enterprise loads[cite: 1].</p>
           <div class="tech-tags">
-            <span class="tech-tag">Claude</span>
-            <span class="tech-tag">Windsurf</span>
-            <span class="tech-tag">Devin</span>
-            <span class="tech-tag">GitHub Copilot</span>
+            <span class="tech-tag" onclick="burstTag(this)">
+              <svg viewBox="0 0 24 24" fill="#ea580c"><path d="M2 19h18v2H2zM20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 5v2h-2V5h2v3zM6 13V5h8v8c0 1.1-.9 2-2 2H8c-1.1 0-2-.9-2-2z"/></svg>
+              Java & J2EE
+            </span>
+            <span class="tech-tag" onclick="burstTag(this)">
+              <svg viewBox="0 0 24 24" fill="#6db33f"><path d="M21.8 11.5c-.2-4.8-4-8.8-8.8-9.4C6.8 1.4 1.8 6.1 1.6 12.3c-.2 5.5 3.9 10.1 9.4 10.3 6.2.2 11-4.9 10.8-11.1zm-9.3 7.8c-4.2 0-7.6-3.4-7.6-7.6s3.4-7.6 7.6-7.6 7.6 3.4 7.6 7.6-3.4 7.6-7.6 7.6z"/></svg>
+              Spring Boot
+            </span>
+            <span class="tech-tag" onclick="burstTag(this)">Spring MVC</span>
+            <span class="tech-tag" onclick="burstTag(this)">RESTful APIs</span>
           </div>
         </div>
 
-        <div class="bento-card col-4">
-          <h3>Modular Frontend <span>🅰️</span></h3>
-          <p>Single Page Applications built in Angular 6 to 17, leveraging RxJS streams, reusable design systems, and resilient client-side state.</p>
+        <!-- Messaging & Database Tier -->
+        <div class="bento-card col-6">
+          <h3>
+            <span>Persistence & Messaging</span>
+            <div style="display:flex; gap:6px;">
+              <!-- Kafka Icon -->
+              <svg viewBox="0 0 24 24" fill="#e2e8f0" width="22" height="22"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+              <!-- MySQL Icon -->
+              <svg viewBox="0 0 24 24" fill="#00758f" width="22" height="22"><path d="M12 2a10 10 0 0 0-10 10c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+            </div>
+          </h3>
+          <p>Database architecture and performance tuning using Spring Data JPA, MySQL, and Oracle 11g, complemented by asynchronous integration with Apache Kafka and Message Queues[cite: 1].</p>
           <div class="tech-tags">
-            <span class="tech-tag">Angular 17</span>
-            <span class="tech-tag">RxJS</span>
-            <span class="tech-tag">TypeScript</span>
+            <span class="tech-tag" onclick="burstTag(this)">
+              <!-- Kafka SVG -->
+              <svg viewBox="0 0 24 24" fill="#38bdf8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+              Apache Kafka
+            </span>
+            <span class="tech-tag" onclick="burstTag(this)">Spring Data JPA</span>
+            <span class="tech-tag" onclick="burstTag(this)">
+              <!-- MySQL SVG -->
+              <svg viewBox="0 0 24 24" fill="#00758f"><path d="M4 6h16v12H4z"/></svg>
+              MySQL
+            </span>
+            <span class="tech-tag" onclick="burstTag(this)">
+              <!-- Oracle Red SVG -->
+              <svg viewBox="0 0 24 24" fill="#f80000"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+              Oracle 11g
+            </span>
+            <span class="tech-tag" onclick="burstTag(this)">Message Queues (MQ)</span>
           </div>
         </div>
 
-        <div class="bento-card col-8">
-          <h3>Containers & Data Reliability <span>🐳</span></h3>
-          <p>Containerizing microservices via Docker, automating deployments through Jenkins CI/CD, and structuring persistence with Spring Data JPA across Oracle & MySQL.</p>
+        <!-- DevOps & Cloud Tier -->
+        <div class="bento-card col-6">
+          <h3>
+            <span>DevOps & Tools</span>
+            <div style="display:flex; gap:6px;">
+              <!-- Docker Whale -->
+              <svg viewBox="0 0 24 24" fill="#38bdf8" width="22" height="22"><path d="M13.96 5.67h2.09v1.94h-2.09V5.67zm-2.88 0h2.09v1.94h-2.09V5.67zm-2.89 0h2.09v1.94H8.19V5.67zm8.65 2.64h2.09v1.94h-2.09V8.31zm-2.88 0h2.09v1.94h-2.09V8.31zm-2.88 0h2.09v1.94h-2.09V8.31zm-2.89 0h2.09v1.94H8.19V8.31zm-2.88 0h2.08v1.94H5.31V8.31zm17.65 3.01c-.34-.23-1.09-.34-1.75-.12-.17-.7-.61-1.3-1.28-1.71l-.57-.35-.37.55c-.47.7-.62 1.54-.42 2.36-.93.55-2.09.84-3.35.84H2.43c-.24 0-.46.12-.59.31-.13.2-.15.44-.06.66 1.15 2.91 3.51 5.08 6.47 5.96 1.15.34 2.37.52 3.6.52 4.97 0 9.29-2.91 10.74-7.25.07-.22.37-.32.61-.25.59.18 1.18.06 1.55-.3.26-.26.4-.64.38-1.02-.02-.38-.2-.71-.47-.85z"/></svg>
+              <!-- Jenkins Icon -->
+              <svg viewBox="0 0 24 24" fill="#d24939" width="22" height="22"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14h-2v-6h2zm0-8h-2V6h2z"/></svg>
+            </div>
+          </h3>
+          <p>Packaging services in Docker, managing deployments with Jenkins[cite: 1], and leveraging modern AI engineering tools (Claude, Windsurf, Devin, GitHub Copilot) to accelerate unit test writing and documentation[cite: 1].</p>
           <div class="tech-tags">
-            <span class="tech-tag">Docker</span>
-            <span class="tech-tag">Kubernetes</span>
-            <span class="tech-tag">Jenkins</span>
-            <span class="tech-tag">Spring Data JPA</span>
-            <span class="tech-tag">MySQL / Oracle 11g</span>
+            <span class="tech-tag" onclick="burstTag(this)">
+              <svg viewBox="0 0 24 24" fill="#38bdf8"><path d="M13.96 5.67h2.09v1.94h-2.09V5.67zm-2.88 0h2.09v1.94h-2.09V5.67zm-2.89 0h2.09v1.94H8.19V5.67zm8.65 2.64h2.09v1.94h-2.09V8.31zm-2.88 0h2.09v1.94h-2.09V8.31zm-2.88 0h2.09v1.94h-2.09V8.31zm-2.89 0h2.09v1.94H8.19V8.31zm-2.88 0h2.08v1.94H5.31V8.31z"/></svg>
+              Docker
+            </span>
+            <span class="tech-tag" onclick="burstTag(this)">
+              <svg viewBox="0 0 24 24" fill="#326ce5"><path d="M12 2L2 8l3 12 7 2 7-2 3-12-10-6zm0 3.5l6.5 3.9-2 8-4.5 1.3-4.5-1.3-2-8L12 5.5z"/></svg>
+              Kubernetes
+            </span>
+            <span class="tech-tag" onclick="burstTag(this)">Jenkins CI/CD</span>
+            <span class="tech-tag" onclick="burstTag(this)">GitHub Copilot</span>
           </div>
         </div>
       </div>
@@ -395,7 +576,7 @@ a { color: inherit; text-decoration: none; }
     <div class="wrap">
       <div class="section-meta">
         <span class="section-num">02 / CAREER TRACK</span>
-        <h2 class="section-h2">11+ Years Experience</h2>
+        <h2 class="section-h2">11+ Years of Work Experience</h2>
       </div>
 
       <div class="timeline">
@@ -404,13 +585,14 @@ a { color: inherit; text-decoration: none; }
             <h3 class="timeline-title">Senior Specialist</h3>
             <span class="timeline-period">Aug 2023 — Present</span>
           </div>
-          <p class="timeline-company">LTIMindtree · Kolkata, India</p>
+          <p class="timeline-company">LTIMindtree · Kolkata, India[cite: 1]</p>
           <ul class="timeline-list">
-            <li>Spearheaded full stack development initiatives, cutting feature delivery cycles significantly.</li>
-            <li>Engineered an enterprise UI portal with Angular 17, elevating user engagement and responsiveness.</li>
-            <li>Built asynchronous, decoupled service integrations using Apache Kafka and messaging queues.</li>
-            <li>Created and published production Docker images to streamline deployment pipelines via Jenkins.</li>
-            <li>Integrated Claude, Windsurf, Devin, and GitHub Copilot to optimize automated testing and code generation.</li>
+            <li>Spearheaded full stack development initiatives, cutting feature delivery cycles and improving timeline accuracy[cite: 1].</li>
+            <li>Designed and developed responsive UI portals using Angular 17, delivering a seamless client experience[cite: 1].</li>
+            <li>Engineered backend business services with Spring Boot and integrated messaging queues and Apache Kafka for asynchronous workflows[cite: 1].</li>
+            <li>Containerized full stack applications with Docker and published automated images to improve deployment reliability[cite: 1].</li>
+            <li>Collaborated directly with business teams to translate functional specifications into robust technical architecture[cite: 1].</li>
+            <li>Employed generative AI tools (Claude, Windsurf, Devin, Copilot) to accelerate unit test writing, code refactoring, and documentation[cite: 1].</li>
           </ul>
         </div>
 
@@ -419,11 +601,11 @@ a { color: inherit; text-decoration: none; }
             <h3 class="timeline-title">Senior Technical Associate</h3>
             <span class="timeline-period">Mar 2018 — Aug 2023</span>
           </div>
-          <p class="timeline-company">Evoke Technologies · Hyderabad, India</p>
+          <p class="timeline-company">Evoke Technologies · Hyderabad, India[cite: 1]</p>
           <ul class="timeline-list">
-            <li>Led microservice refactoring that significantly boosted system throughput and stability.</li>
-            <li>Optimized the database persistence layer using Spring Data JPA, cutting SQL query overhead.</li>
-            <li>Containerized legacy monolithic endpoints into isolated, manageable Docker microservices.</li>
+            <li>Led full stack engineering projects delivering high-performance web applications across distributed teams[cite: 1].</li>
+            <li>Built and optimized persistence models using JpaRepository in Spring Data JPA, reducing SQL query latency and boosting overall performance[cite: 1].</li>
+            <li>Implemented modern DevOps practices and built Docker container images for frictionless release cycles[cite: 1].</li>
           </ul>
         </div>
 
@@ -432,10 +614,10 @@ a { color: inherit; text-decoration: none; }
             <h3 class="timeline-title">Software Engineer</h3>
             <span class="timeline-period">Mar 2015 — Feb 2018</span>
           </div>
-          <p class="timeline-company">Pyro Telecom Solutions Pvt. Ltd. · Hyderabad, India</p>
+          <p class="timeline-company">Pyro Telecom Solutions Pvt. Ltd. · Hyderabad, India[cite: 1]</p>
           <ul class="timeline-list">
-            <li>Designed and maintained high-volume core telecom billing web services.</li>
-            <li>Delivered bug-free releases by enforcing strict unit tests and agile code review cycles.</li>
+            <li>Participated in full SDLC phases: requirement analysis, backend design, core Java/J2EE coding, and comprehensive testing[cite: 1].</li>
+            <li>Integrated secure third-party APIs and telecom web services, expanding application capabilities[cite: 1].</li>
           </ul>
         </div>
       </div>
@@ -446,57 +628,159 @@ a { color: inherit; text-decoration: none; }
   <footer id="contact" class="footer-section">
     <div class="wrap">
       <div class="cta-box">
-        <span class="section-num" style="display:block; margin-bottom:1rem;">03 / REACH OUT</span>
-        <h2 style="font-family:var(--font-display); font-size:clamp(2rem, 4.5vw, 3.5rem); font-weight:700;">Let’s build mission-critical software.</h2>
-        <a class="cta-email" href="mailto:akshay.kverma14@gmail.com">akshay.kverma14@gmail.com</a>
+        <span class="section-num" style="display:block; margin-bottom:1rem;">03 / INITIATE CONTACT</span>
+        <h2 style="font-family:var(--font-display); font-size:clamp(2rem, 4.5vw, 3.5rem); font-weight:700;">Let’s build full-stack solutions together.</h2>
+        <p style="color:var(--muted); max-width:50ch; margin:0.8rem auto 0;">Looking for a Senior or Lead Java Full Stack Developer who owns solutions from the database to the browser? Let's connect.</p>
+        <a class="cta-email" href="mailto:akshay.kverma14@gmail.com" onclick="shootConfetti()">akshay.kverma14@gmail.com</a>
         <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; margin-top:1.5rem;">
-          <a class="btn primary" href="tel:+917979886622">+91 79798 86622</a>
-          <a class="btn secondary" href="./assets/Akshay-Verma-Resume.pdf" download>Download Resume</a>
+          <a class="btn primary" href="tel:+917979886622" onclick="shootConfetti()">+91 79798 86622</a>
+          <a class="btn secondary" href="./assets/Akshay-Verma-Resume.pdf" download onclick="shootConfetti()">Download Resume</a>
         </div>
       </div>
 
       <div class="footer-bottom">
-        <div>© 2026 Akshay Verma. Built for scale.</div>
-        <div>Spring Boot · Kafka · Angular</div>
+        <div>© 2026 Akshay Verma. Full Stack Java & Angular.</div>
+        <div>Kolkata, India[cite: 1]</div>
       </div>
     </div>
   </footer>
 </main>
 
 <script>
-// 1. Interactive 3D Avatar Tilt
-const avatarWrap = document.getElementById('avatarWrap');
-const avatarCard = document.getElementById('avatarCard');
+// --- 1. Dynamic Confetti Physics ---
+const canvas = document.getElementById('fxCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
 
-if (avatarWrap && avatarCard && window.matchMedia('(pointer:fine)').matches) {
-  avatarWrap.addEventListener('mousemove', (e) => {
-    const rect = avatarWrap.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    avatarCard.style.transform = `rotateY(${x * 0.08}deg) rotateX(${-y * 0.08}deg)`;
-  });
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
-  avatarWrap.addEventListener('mouseleave', () => {
-    avatarCard.style.transform = `rotateY(0deg) rotateX(0deg)`;
-  });
+function shootConfetti() {
+  const colors = ['#38bdf8', '#2dd4bf', '#fbbf24', '#f43f5e', '#ea580c', '#dd0031'];
+  for (let i = 0; i < 70; i++) {
+    particles.push({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+      vx: (Math.random() - 0.5) * 16,
+      vy: (Math.random() - 0.7) * 16,
+      size: Math.random() * 7 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      alpha: 1,
+      rotation: Math.random() * 360,
+      vRot: (Math.random() - 0.5) * 10
+    });
+  }
 }
 
-// 2. Ambient Mouse Glow
+function burstTag(el) {
+  const rect = el.getBoundingClientRect();
+  const colors = ['#38bdf8', '#2dd4bf', '#ea580c'];
+  for (let i = 0; i < 20; i++) {
+    particles.push({
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+      vx: (Math.random() - 0.5) * 8,
+      vy: (Math.random() - 0.5) * 8,
+      size: Math.random() * 4 + 2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      alpha: 1,
+      rotation: 0,
+      vRot: 0
+    });
+  }
+}
+
+function renderFX() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.35; // gravity
+    p.alpha -= 0.015;
+    p.rotation += p.vRot;
+
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.alpha);
+    ctx.translate(p.x, p.y);
+    ctx.rotate((p.rotation * Math.PI) / 180);
+    ctx.fillStyle = p.color;
+    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+    ctx.restore();
+
+    if (p.alpha <= 0) particles.splice(i, 1);
+  }
+  requestAnimationFrame(renderFX);
+}
+renderFX();
+
+// --- 2. Eye Tracking for the Companion Avatar Bot ---
+const eyeL = document.getElementById('eyeL');
+const eyeR = document.getElementById('eyeR');
+const bot = document.getElementById('avatarBot');
+
 window.addEventListener('mousemove', (e) => {
   document.body.style.setProperty('--mouse-x', `${e.clientX}px`);
   document.body.style.setProperty('--mouse-y', `${e.clientY}px`);
+
+  if (!bot) return;
+  const rect = bot.getBoundingClientRect();
+  const botX = rect.left + rect.width / 2;
+  const botY = rect.top + rect.height / 2;
+  const angle = Math.atan2(e.clientY - botY, e.clientX - botX);
+  const dist = Math.min(2.5, Math.hypot(e.clientX - botX, e.clientY - botY) / 60);
+
+  const moveX = Math.cos(angle) * dist;
+  const moveY = Math.sin(angle) * dist;
+
+  eyeL.style.transform = `translate(${moveX}px, ${moveY}px)`;
+  eyeR.style.transform = `translate(${moveX}px, ${moveY}px)`;
 });
 
-// 3. Interactive Kafka Simulator
-function triggerEvent(btn, topic, logMessage) {
-  document.querySelectorAll('.event-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const streamLog = document.getElementById('streamLog');
-  streamLog.style.opacity = '0.5';
+// --- 3. 3D Tilt for Real Profile Photo ---
+const container = document.getElementById('portraitContainer');
+const card = document.getElementById('portraitCard');
+
+if (container && card && window.matchMedia('(pointer:fine)').matches) {
+  container.addEventListener('mousemove', (e) => {
+    const rect = container.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    card.style.transform = `rotateY(${x * 0.08}deg) rotateX(${-y * 0.08}deg) translateZ(10px)`;
+  });
+
+  container.addEventListener('mouseleave', () => {
+    card.style.transform = `rotateY(0deg) rotateX(0deg) translateZ(0px)`;
+  });
+}
+
+// --- 4. Interactive Avatar Dialogue ---
+const tips = [
+  "Akshay has 11+ years of experience delivering full-stack Java and Angular systems[cite: 1].",
+  "Specialized in Spring Boot microservices, Angular 17 UI, and Docker containerization[cite: 1].",
+  "Currently working as a Senior Specialist at LTIMindtree. Open to new senior opportunities![cite: 1]",
+  "Click any of the tech buttons or metrics for a fun celebration!"
+];
+let tipIndex = 0;
+
+function cycleAvatarTip() {
+  shootConfetti();
+  tipIndex = (tipIndex + 1) % tips.length;
+  const bubbleText = document.getElementById('bubbleText');
+  bubbleText.style.opacity = '0';
   setTimeout(() => {
-    streamLog.innerHTML = `&gt; [Topic: <b>${topic}</b>] ${logMessage}`;
-    streamLog.style.opacity = '1';
-  }, 120);
+    bubbleText.textContent = tips[tipIndex];
+    bubbleText.style.opacity = '1';
+  }, 150);
+}
+
+function quickNav(targetId) {
+  const el = document.querySelector(targetId);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
 }
 </script>
 </body>
